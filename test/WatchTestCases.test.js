@@ -19,7 +19,11 @@ function copyDiff(src, dest) {
 		if(directory) {
 			copyDiff(srcFile, destFile);
 		} else {
-			fs.writeFileSync(destFile, fs.readFileSync(srcFile));
+			var content = fs.readFileSync(srcFile);
+			if(/^DELETE\s*$/.test(content.toString("utf-8")))
+				fs.unlinkSync(destFile);
+			else
+				fs.writeFileSync(destFile, content);
 		}
 	});
 }
